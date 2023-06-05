@@ -28,12 +28,10 @@ fun Application.configureRouting() {
             }
 
             //http://localhost:8080/workout/6479d2865bca302cef15d021?exerciseId=1&name=test
-            put("/{workoutId}") {
-                val workoutId = call.parameters["workoutId"]?: ""
-                val exerciseId = call.parameters["exerciseId"]?.toInt() ?: 0
-                val name = call.parameters["name"]?: ""
+            put {
+                val workout = call.receive<Workout>()
 
-                val updatedSuccessfully = service.updateById(workoutId,exerciseId,name)
+                val updatedSuccessfully = service.updateWorkoutById(workout)
                 if (updatedSuccessfully) {
                     call.respond(HttpStatusCode.OK)
                 } else {
@@ -43,7 +41,7 @@ fun Application.configureRouting() {
 
             delete("/{id}") {
                 val id = call.parameters["id"] ?: ""
-                val deletedSuccessfully = service.deleteById(id)
+                val deletedSuccessfully = service.deleteWorkoutById(id)
                 if (deletedSuccessfully) {
                     call.respond(HttpStatusCode.NoContent)
                 } else {

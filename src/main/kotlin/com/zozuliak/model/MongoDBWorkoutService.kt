@@ -19,22 +19,18 @@ class MongoDBWorkoutService : WorkoutService {
         return workoutsForUser.toList()
     }
 
-    override fun deleteById(id: String): Boolean {
+    override fun deleteWorkoutById(id: String): Boolean {
         val deleteResult = workoutCollection.deleteOneById(id)
         return deleteResult.deletedCount == 1L
     }
 
-    override fun findById(id: String): Workout? {
+    override fun findWorkoutById(id: String): Workout? {
         return workoutCollection.findOne(Workout::id eq id)
     }
 
-    override fun updateById(workoutId: String, exerciseId: Int, name: String): Boolean {
-        findById(workoutId)
-            ?.let { workout ->
-                workout.exercises?.find { it.id == exerciseId }?.name = name
-                workout.let { workoutCollection.updateOneById(workout.id, workout) }
-                return true
-            } ?: return false
+    override fun updateWorkoutById(workout: Workout): Boolean {
+        val updateResult = workoutCollection.updateOneById(workout.id, workout)
+        return updateResult.wasAcknowledged()
     }
 
 }

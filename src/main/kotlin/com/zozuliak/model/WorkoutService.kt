@@ -9,10 +9,10 @@ interface WorkoutService {
 
     fun getWorkoutsForUser(userId: String) : List<Workout>
 
-    fun deleteById(id: String): Boolean
+    fun deleteWorkoutById(id: String): Boolean
 
-    fun findById(id: String): Workout?
+    fun findWorkoutById(id: String): Workout?
 
-    fun updateById(workoutId: String, exerciseId: Int, name: String): Boolean
+    fun updateWorkoutById(workout: Workout): Boolean
 
 }
