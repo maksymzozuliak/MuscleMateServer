@@ -13,6 +13,6 @@ interface WorkoutService {
 
     fun findWorkoutById(id: String): Workout?
 
-    fun updateWorkoutById(workout: Workout): Boolean
+    fun updateWorkout(workout: Workout): Boolean
 
 }

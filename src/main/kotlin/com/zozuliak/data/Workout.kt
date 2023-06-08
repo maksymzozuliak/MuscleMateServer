@@ -3,14 +3,11 @@ package com.zozuliak.data
 import kotlinx.serialization.Serializable
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import java.sql.Time
-import java.sql.Timestamp
-import java.time.LocalDate
 
 @Serializable
 data class Workout(
     @BsonId
-    val id: String = ObjectId().toString(),
+    val id: String? = ObjectId().toString(),
     val userId: String,
     var name: String,
     var exercises: List<Exercise>? = null

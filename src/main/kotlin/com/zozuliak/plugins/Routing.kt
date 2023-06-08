@@ -22,8 +22,7 @@ fun Application.configureRouting() {
                 val workout = call.receive<Workout>()
                 service.addWorkout(workout)
                     .let { id ->
-                        call.response.headers.append("Workout-Id-Header", id)
-                        call.respond(HttpStatusCode.Created)
+                        call.respond(HttpStatusCode.Created, id)
                     }
             }
 
@@ -31,9 +30,9 @@ fun Application.configureRouting() {
             put {
                 val workout = call.receive<Workout>()
 
-                val updatedSuccessfully = service.updateWorkoutById(workout)
+                val updatedSuccessfully = service.updateWorkout(workout)
                 if (updatedSuccessfully) {
-                    call.respond(HttpStatusCode.OK)
+                    call.respond(HttpStatusCode.OK, updatedSuccessfully)
                 } else {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse.NOT_FOUND_RESPONSE)
                 }

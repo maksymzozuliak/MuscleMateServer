@@ -11,7 +11,7 @@ class MongoDBWorkoutService : WorkoutService {
 
     override fun addWorkout(workout: Workout): String {
         workoutCollection.insertOne(workout)
-        return workout.id
+        return workout.id ?: ""
     }
 
     override fun getWorkoutsForUser(userId: String): List<Workout> {
@@ -28,9 +28,11 @@ class MongoDBWorkoutService : WorkoutService {
         return workoutCollection.findOne(Workout::id eq id)
     }
 
-    override fun updateWorkoutById(workout: Workout): Boolean {
-        val updateResult = workoutCollection.updateOneById(workout.id, workout)
-        return updateResult.wasAcknowledged()
+    override fun updateWorkout(workout: Workout): Boolean {
+        return if( workout.id != null) {
+            val updateResult = workoutCollection.updateOneById(workout.id, workout)
+            updateResult.wasAcknowledged()
+        } else false
     }
 
 }
