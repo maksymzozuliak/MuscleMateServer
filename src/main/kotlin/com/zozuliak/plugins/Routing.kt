@@ -1,6 +1,7 @@
 package com.zozuliak.plugins
 
 import com.zozuliak.data.ErrorResponse
+import com.zozuliak.data.Exercise
 import com.zozuliak.data.Workout
 import com.zozuliak.model.MongoDBWorkoutService
 import com.zozuliak.model.WorkoutService
@@ -16,7 +17,7 @@ fun Application.configureRouting() {
 
     routing {
 
-        route("/workout") {
+        route("/workouts") {
 
             post {
                 val workout = call.receive<Workout>()
@@ -26,7 +27,6 @@ fun Application.configureRouting() {
                     }
             }
 
-            //http://localhost:8080/workout/6479d2865bca302cef15d021?exerciseId=1&name=test
             put {
                 val workout = call.receive<Workout>()
 
@@ -47,13 +47,49 @@ fun Application.configureRouting() {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse.NOT_FOUND_RESPONSE)
                 }
             }
-        }
 
-        route("/workouts") {
             get("/{userId}") {
                 val userId = call.parameters["userId"] ?: ""
                 val workoutsForUser = service.getWorkoutsForUser(userId = userId)
                 call.respond(workoutsForUser)
+            }
+        }
+
+        route("/exercises") {
+
+            post {
+                val exercise = call.receive<Exercise>()
+                service.addExercise(exercise)
+                    .let { id ->
+                        call.respond(HttpStatusCode.Created, id)
+                    }
+            }
+
+            put {
+                val exercise = call.receive<Exercise>()
+
+                val updatedSuccessfully = service.updateExercise(exercise)
+                if (updatedSuccessfully) {
+                    call.respond(HttpStatusCode.OK, updatedSuccessfully)
+                } else {
+                    call.respond(HttpStatusCode.NotFound, ErrorResponse.NOT_FOUND_RESPONSE)
+                }
+            }
+
+            delete("/{id}") {
+                val id = call.parameters["id"] ?: ""
+                val deletedSuccessfully = service.deleteExerciseById(id)
+                if (deletedSuccessfully) {
+                    call.respond(HttpStatusCode.NoContent)
+                } else {
+                    call.respond(HttpStatusCode.NotFound, ErrorResponse.NOT_FOUND_RESPONSE)
+                }
+            }
+
+            get("/{workoutId}") {
+                val workoutId = call.parameters["workoutId"] ?: ""
+                val exercisesForWorkout = service.getExercisesForWorkout(workoutId = workoutId)
+                call.respond(exercisesForWorkout)
             }
         }
     }

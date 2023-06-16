@@ -1,13 +1,15 @@
 package com.zozuliak.model
 
+import com.zozuliak.data.Exercise
 import com.zozuliak.data.Workout
 import org.litote.kmongo.*
 
 class MongoDBWorkoutService : WorkoutService {
 
     private val client = KMongo.createClient()
-    private val database = client.getDatabase("workout")
+    private val database = client.getDatabase("MuscleMate")
     private val workoutCollection = database.getCollection<Workout>()
+    private val exerciseCollection = database.getCollection<Exercise>()
 
     override fun addWorkout(workout: Workout): String {
         workoutCollection.insertOne(workout)
@@ -31,6 +33,32 @@ class MongoDBWorkoutService : WorkoutService {
     override fun updateWorkout(workout: Workout): Boolean {
         return if( workout.id != null) {
             val updateResult = workoutCollection.updateOneById(workout.id, workout)
+            updateResult.wasAcknowledged()
+        } else false
+    }
+
+    override fun addExercise(exercise: Exercise): String {
+        exerciseCollection.insertOne(exercise)
+        return exercise.id ?: ""
+    }
+
+    override fun getExercisesForWorkout(workoutId: String): List<Exercise> {
+        val exercisesForWorkout = exerciseCollection.find(Exercise::workoutId eq workoutId)
+        return exercisesForWorkout.toList().sortedBy { it.position }
+    }
+
+    override fun deleteExerciseById(id: String): Boolean {
+        val deleteResult = exerciseCollection.deleteOneById(id)
+        return deleteResult.deletedCount == 1L
+    }
+
+    override fun findExerciseById(id: String): Exercise? {
+        return exerciseCollection.findOne(Exercise::id eq id)
+    }
+
+    override fun updateExercise(exercise: Exercise): Boolean {
+        return if( exercise.id != null) {
+            val updateResult = exerciseCollection.updateOneById(exercise.id, exercise)
             updateResult.wasAcknowledged()
         } else false
     }
