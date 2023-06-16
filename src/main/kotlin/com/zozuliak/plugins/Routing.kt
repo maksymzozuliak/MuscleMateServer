@@ -91,6 +91,18 @@ fun Application.configureRouting() {
                 val exercisesForWorkout = service.getExercisesForWorkout(workoutId = workoutId)
                 call.respond(exercisesForWorkout)
             }
+
+            post("/move/{id}") {
+                val id = call.parameters["id"] ?: ""
+                val up = call.parameters["up"]?.toBoolean()
+                val movedSuccessfully = service.moveExercise(up = up ?: true, id = id)
+                if (movedSuccessfully) {
+                    call.respond(HttpStatusCode.NoContent)
+                } else {
+                    call.respond(HttpStatusCode.NotFound, ErrorResponse.NOT_FOUND_RESPONSE)
+                }
+
+            }
         }
     }
 }

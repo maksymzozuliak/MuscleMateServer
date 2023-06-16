@@ -63,4 +63,34 @@ class MongoDBWorkoutService : WorkoutService {
         } else false
     }
 
+    override fun moveExercise(up: Boolean, id: String): Boolean {
+        val mainExercise = findExerciseById(id)
+        val temp : Int
+        if (mainExercise != null) {
+            if (up) {
+                val upperExercise = exerciseCollection.findOne(and(
+                    Exercise::position eq mainExercise.position - 1,
+                    Exercise::workoutId eq mainExercise.workoutId
+                ))
+                if (upperExercise != null) {
+                    temp = mainExercise.position
+                    mainExercise.position = upperExercise.position
+                    upperExercise.position = temp
+                    return (updateExercise(mainExercise) && updateExercise(upperExercise))
+                }
+            } else {
+                val lowerExercise = exerciseCollection.findOne(and(
+                    Exercise::position eq mainExercise.position + 1,
+                    Exercise::workoutId eq mainExercise.workoutId
+                ))
+                if (lowerExercise != null) {
+                    temp = mainExercise.position
+                    mainExercise.position = lowerExercise.position
+                    lowerExercise.position = temp
+                    return (updateExercise(mainExercise) && updateExercise(lowerExercise))
+                }
+            }
+        }
+        return false
+    }
 }

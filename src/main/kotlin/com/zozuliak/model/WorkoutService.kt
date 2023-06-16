@@ -26,4 +26,6 @@ interface WorkoutService {
 
     fun updateExercise(exercise: Exercise): Boolean
 
+    fun moveExercise(up: Boolean, id: String) : Boolean
+
 }
