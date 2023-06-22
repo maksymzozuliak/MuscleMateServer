@@ -86,6 +86,16 @@ fun Application.configureRouting() {
                 }
             }
 
+            get("/single") {
+                val exerciseId = call.parameters["exerciseId"] ?: ""
+                val exercise = service.findExerciseById(id = exerciseId)
+                if (exercise != null) {
+                    call.respond(exercise)
+                } else {
+                    call.respond(exerciseId)
+                }
+            }
+
             get("/{workoutId}") {
                 val workoutId = call.parameters["workoutId"] ?: ""
                 val exercisesForWorkout = service.getExercisesForWorkout(workoutId = workoutId)
