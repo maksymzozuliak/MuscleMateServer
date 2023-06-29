@@ -23,6 +23,7 @@ class MongoDBWorkoutService : WorkoutService {
 
     override fun deleteWorkoutById(id: String): Boolean {
         val deleteResult = workoutCollection.deleteOneById(id)
+        exerciseCollection.deleteMany(Exercise::workoutId eq id)
         return deleteResult.deletedCount == 1L
     }
 
@@ -38,6 +39,10 @@ class MongoDBWorkoutService : WorkoutService {
     }
 
     override fun addExercise(exercise: Exercise): String {
+        var _exercise = exercise
+        if (exercise.personalRecord == null && exercise.sets != null) {
+            _exercise.personalRecord = exercise.sets!!.maxByOrNull { it.weight }!!
+        }
         exerciseCollection.insertOne(exercise)
         return exercise.id ?: ""
     }
@@ -58,7 +63,13 @@ class MongoDBWorkoutService : WorkoutService {
 
     override fun updateExercise(exercise: Exercise): Boolean {
         return if( exercise.id != null) {
-            val updateResult = exerciseCollection.updateOneById(exercise.id, exercise)
+            val _exercise = exercise
+            if (exercise.personalRecord != null && exercise.sets != null &&
+                exercise.personalRecord!!.weight < (exercise.sets!!.maxByOrNull { it.weight }?.weight ?: 0f)
+            ) {
+                _exercise.personalRecord = exercise.sets!!.maxByOrNull { it.weight }
+            }
+            val updateResult = exerciseCollection.updateOneById(exercise.id, _exercise)
             updateResult.wasAcknowledged()
         } else false
     }

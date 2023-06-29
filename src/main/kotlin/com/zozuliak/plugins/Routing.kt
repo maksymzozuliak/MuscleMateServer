@@ -42,7 +42,7 @@ fun Application.configureRouting() {
                 val id = call.parameters["id"] ?: ""
                 val deletedSuccessfully = service.deleteWorkoutById(id)
                 if (deletedSuccessfully) {
-                    call.respond(HttpStatusCode.NoContent)
+                    call.respond(HttpStatusCode.OK, deletedSuccessfully)
                 } else {
                     call.respond(HttpStatusCode.NotFound, ErrorResponse.NOT_FOUND_RESPONSE)
                 }
