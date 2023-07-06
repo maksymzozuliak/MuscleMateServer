@@ -2,11 +2,16 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val kmongo_version: String by project
+val mongodb_driver: String by project
 
 plugins {
     kotlin("jvm") version "1.8.21"
     id("io.ktor.plugin") version "2.3.1"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
+}
+
+tasks {
+    create("stage").dependsOn("installDist")
 }
 
 group = "com.zozuliak"
@@ -33,4 +38,6 @@ dependencies {
 
     //MongoDB
     implementation("org.litote.kmongo:kmongo:$kmongo_version")
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:$mongodb_driver")
+
 }

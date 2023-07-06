@@ -6,26 +6,26 @@ import org.litote.kmongo.Id
 
 interface WorkoutService {
 
-    fun addWorkout(workout: Workout) : String
+    suspend fun addWorkout(workout: Workout) : String
 
-    fun getWorkoutsForUser(userId: String) : List<Workout>
+    suspend fun getWorkoutsForUser(userId: String) : List<Workout>
 
-    fun deleteWorkoutById(id: String): Boolean
+    suspend fun deleteWorkoutById(id: String): Boolean
 
-    fun findWorkoutById(id: String): Workout?
+    suspend fun findWorkoutById(id: String): Workout?
 
-    fun updateWorkout(workout: Workout): Boolean
+    suspend fun updateWorkout(workout: Workout): Boolean
 
-    fun addExercise(exercise: Exercise) : String
+    suspend fun addExercise(exercise: Exercise) : String
 
-    fun getExercisesForWorkout(workoutId: String) : List<Exercise>
+    suspend fun getExercisesForWorkout(workoutId: String) : List<Exercise>
 
-    fun deleteExerciseById(id: String): Boolean
+    suspend fun deleteExerciseById(id: String): Boolean
 
-    fun findExerciseById(id: String): Exercise?
+    suspend fun findExerciseById(id: String): Exercise?
 
-    fun updateExercise(exercise: Exercise): Boolean
+    suspend fun updateExercise(exercise: Exercise): Boolean
 
-    fun moveExercise(up: Boolean, id: String) : Boolean
+    suspend fun moveExercise(up: Boolean, id: String) : Boolean
 
 }
